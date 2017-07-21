@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import {GrievenceService} from  '../../services/grievance.service'
+import { NavController, AlertController } from 'ionic-angular';
+
+import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database"; 
 
 @Component({
   selector: 'page-grievance',
@@ -8,9 +11,41 @@ import {GrievenceService} from  '../../services/grievance.service'
 export class GrievancePage {
 
   grievances: any = ['Water Problem in Madipakkam','We can do better in saving street light electricity'];
-
-  constructor(private grievenceService:GrievenceService) {
+  values: FirebaseListObservable<any>;
+  constructor(private grievenceService:GrievenceService,af: AngularFireDatabase,
+    public navCtrl: NavController, public alertCtrl: AlertController) {
+    this.values = af.list('/grievance');
   }
+
+  add(){
+  let prompt = this.alertCtrl.create({
+    title: 'How shall we help!',
+    message: "Please enter your grievance.",
+    inputs: [
+      {
+        name: 'summary',
+        placeholder: ''
+      },
+    ],
+    buttons: [
+      {
+        text: 'Cancel',
+        handler: data => {
+          console.log('Cancel clicked');
+        }
+      },
+      {
+        text: 'Save',
+        handler: data => {
+          this.values.push({
+            summary: data.summary
+          });
+        }
+      }
+    ]
+  });
+  prompt.present();
+}
 
   ionViewWillEnter(){
     this.grievenceService.getGrievances();
