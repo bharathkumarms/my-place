@@ -19,21 +19,21 @@ export class MyApp {
       // Here you can do any higher level native things you might need.
       statusBar.styleDefault();
       splashScreen.hide();
-
-      if (platform.is('cordova')) {
-            // device only code
-            this.push.register().then((t: PushToken) => {
-                return this.push.saveToken(t);
-            }).then((t: PushToken) => {
-                console.log('Token saved:', t.token);
-            });
-
-            this.push.rx.notification()
-            .subscribe((msg) => {
-                alert(msg.title + ': ' + msg.text);
-            });
-        }
     });
+
+    if (platform.is('cordova')) {
+        // device only code
+        this.push.register().then((t: PushToken) => {
+            return this.push.saveToken(t);
+        }).then((t: PushToken) => {
+            console.log('Token saved:', t.token);
+        });
+
+        this.push.rx.notification()
+        .subscribe((msg) => {
+            alert(msg.title + ': ' + msg.text);
+        });
+   }
   }
 }
 
