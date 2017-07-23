@@ -15,6 +15,7 @@ import {GrievenceService} from  '../services/grievance.service'
 import { AngularFireModule } from 'angularfire2';
 
 import { AngularFireDatabaseModule } from "angularfire2/database"; 
+import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
 
 var firebaseConfig = {
     apiKey: "AIzaSyD3FSo0SFO-d4Ls-QtctRUca0NPHGuHwlU",
@@ -23,6 +24,24 @@ var firebaseConfig = {
     projectId: "my-place-e347a",
     storageBucket: "my-place-e347a.appspot.com",
     messagingSenderId: "857434892988"
+};
+
+const cloudSettings: CloudSettings = {
+  'core': {
+    'app_id': '75fe27ce',
+  },
+  'push': {
+    'sender_id': '857434892988',
+    'pluginConfig': {
+      'ios': {
+        'badge': true,
+        'sound': true
+      },
+      'android': {
+        'iconColor': '#343434'
+      }
+    }
+  }
 };
 
 @NgModule({
@@ -37,7 +56,8 @@ var firebaseConfig = {
     BrowserModule,
     IonicModule.forRoot(MyApp),
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    CloudModule.forRoot(cloudSettings)
   ],
   bootstrap: [IonicApp],
   entryComponents: [

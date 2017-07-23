@@ -1,22 +1,39 @@
 import { Component } from '@angular/core';
 import {GrievenceService} from  '../../services/grievance.service'
-import { NavController, AlertController } from 'ionic-angular';
+import {LoadingController, NavController, AlertController } from 'ionic-angular';
 
 import { AngularFireDatabase, FirebaseListObservable } from "angularfire2/database"; 
 
+import { Push, PushToken } from '@ionic/cloud-angular';
+import {Observable} from 'rxjs/Observable';
 @Component({
   selector: 'page-grievance',
   templateUrl: 'grievance.html',
 })
 export class GrievancePage {
-
-  grievances: any = ['Water Problem in Madipakkam','We can do better in saving street light electricity'];
+  
   values: FirebaseListObservable<any>;
+  loader:any;
+
   constructor(private grievenceService:GrievenceService,af: AngularFireDatabase,
-    public navCtrl: NavController, public alertCtrl: AlertController) {
-    this.values = af.list('/grievance');
+    public navCtrl: NavController, public alertCtrl: AlertController, public push: Push,
+    public loading: LoadingController) {
+    
+    this.loader = this.loading.create({
+      content: 'Getting latest entries...'});
+
+    this.loader.present().then(() => {
+      this.values = af.list('/grievance');
+      this.dismissLoader();
+    });
   }
 
+  dismissLoader(){
+    this.values.subscribe(() => {
+    this.loader.dismiss();
+    });
+  }
+  
   add(){
   let prompt = this.alertCtrl.create({
     title: 'How shall we help!',
@@ -54,5 +71,4 @@ export class GrievancePage {
   onAddGrievance(value:{description:string}){
     this.grievenceService.addGrievance(value);
   }
-
 }
